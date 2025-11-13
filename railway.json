@@ -6,7 +6,6 @@
   },
   "deploy": {
     "startCommand": "/app/run-tests.sh",
-    "restartPolicyType": "NEVER",
-    "cronSchedule": "0 1 * * *"
+    "restartPolicyType": "NEVER"
   }
 }
