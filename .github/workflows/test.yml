@@ -27,12 +27,13 @@ jobs:
       - name: Run CI tests
         run: yarn ci-test
 
-      - name: Netlify Deploy
-        env:
-          NETLIFY_SITE: ${{env.NETLIFY_SITE}}
-          NETLIFY_AUTH_TOKEN: ${{secrets.NETLIFY_AUTH_TOKEN}}
-        run: |
-          yarn netlify deploy --prod -s wemove-frontend-tests -d actionkit/reports
+      - name: Upload test reports
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: backstop-reports
+          path: actionkit/reports/html_report/
+          retention-days: 30
 
       - name: Send Slack report
         env:

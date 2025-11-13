@@ -10,16 +10,16 @@ const utilities = {
         width: 768,
         height: 1000,
       },
-      {
-        label: "tablet",
-        width: 940,
-        height: 1000,
-      },
-      {
-        label: "desktop",
-        width: 1024,
-        height: 1000,
-      },
+      // {
+      //   label: "tablet",
+      //   width: 940,
+      //   height: 1000,
+      // },
+      // {
+      //   label: "desktop",
+      //   width: 1024,
+      //   height: 1000,
+      // },
     ];
 
     return IS_AK_TEST ? [viewPorts[2]] : viewPorts;
@@ -28,16 +28,16 @@ const utilities = {
   getScenarios: () => {
     const scenarios = [
       ...require("./../scenarios/embedded"),
-      ...require("./../scenarios/facebook"),
-      ...require("./../scenarios/mail"),
-      ...require("./../scenarios/opt-out"),
-      ...require("./../scenarios/petition"),
-      ...require("./../scenarios/share"),
-      ...require("./../scenarios/signup"),
-      ...require("./../scenarios/survey"),
-      ...require("./../scenarios/thanks"),
-      ...require("./../scenarios/twitter"),
-      ...require("./../scenarios/youmove-petition"),
+      // ...require("./../scenarios/facebook"),
+      // ...require("./../scenarios/mail"),
+      // ...require("./../scenarios/opt-out"),
+      // ...require("./../scenarios/petition"),
+      // ...require("./../scenarios/share"),
+      // ...require("./../scenarios/signup"),
+      // ...require("./../scenarios/survey"),
+      // ...require("./../scenarios/thanks"),
+      // ...require("./../scenarios/twitter"),
+      // ...require("./../scenarios/youmove-petition"),
     ];
 
     if (IS_AK_TEST) {

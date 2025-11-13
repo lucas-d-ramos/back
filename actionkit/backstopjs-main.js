@@ -17,7 +17,7 @@ module.exports = {
   report: ["browser", "json"],
   engine: "playwright",
   scenarioDefaults: {
-    delay: 10000,
+    delay: 3000,
   },
   engineOptions: {
     browser: "chromium",

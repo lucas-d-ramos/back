@@ -1,7 +1,12 @@
 {
-  "buildCommand": "yarn install && yarn playwright install && yarn ci-test",
-  "outputDirectory": "actionkit/reports",
+  "buildCommand": "yarn playwright install && yarn ci-test",
+  "outputDirectory": "actionkit/reports/html_report",
   "installCommand": "yarn install",
   "framework": null,
-  "public": true
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/$1"
+    }
+  ]
 }
