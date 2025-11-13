@@ -1,27 +1,19 @@
 #!/bin/bash
+set -e
 
-echo "============================================"
-echo "Container started at: $(date)"
-echo "Working directory: $(pwd)"
-echo "Files in /app:"
-ls -la /app
-echo "Environment check:"
-echo "NODE_ENV: $NODE_ENV"
-echo "NETLIFY_AUTH_TOKEN: ${NETLIFY_AUTH_TOKEN:0:10}... (truncated)"
-echo "SLACK_WEBHOOK_URL: ${SLACK_WEBHOOK_URL:0:30}... (truncated)"
 echo "============================================"
 echo "Starting BackstopJS Test Suite"
 echo "============================================"
 
-# Run BackstopJS tests (without --docker flag since we're already in Docker)
+# Run BackstopJS tests (allow to continue even if tests fail)
 echo "Running BackstopJS tests..."
-backstop test --config="actionkit/backstopjs-main.js" || echo "Tests completed with failures"
+yarn ci-test || echo "Tests completed with failures"
 
 echo ""
 echo "============================================"
 echo "Deploying reports to Netlify"
 echo "============================================"
-netlify deploy --prod -s wemove-frontend-tests -d actionkit/reports
+yarn netlify deploy --prod -s wemove-frontend-tests -d actionkit/reports
 
 echo ""
 echo "============================================"
