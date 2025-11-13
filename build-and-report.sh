@@ -3,11 +3,8 @@
 # Don't exit on error - we want to continue even if tests fail
 set +e
 
-echo "Installing Playwright system dependencies..."
-yarn playwright install-deps
-
 echo "Installing Playwright browsers..."
-yarn playwright install
+yarn playwright install --with-deps
 
 echo "Running BackstopJS tests..."
 yarn ci-test
