@@ -1,0 +1,11 @@
+[
+  {
+    "name": "CookieConsent",
+    "value": "{stamp:%27PQhlqf31NEjpmYEsLEG5gYyCp2fANb+M9VmIMNt8zibZpZyg8yXiRg==%27%2Cnecessary:true%2Cpreferences:true%2Cstatistics:true%2Cmarketing:true%2Cmethod:%27explicit%27%2Cver:1%2Cutc:1710944413417%2Cregion:%27it%27}",
+    "domain": "action.wemove.eu",
+    "path": "/",
+    "expires": 1777120871.234102,
+    "httpOnly": false,
+    "secure": true
+  }
+]
