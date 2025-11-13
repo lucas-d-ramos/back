@@ -20,15 +20,7 @@ module.exports = {
     delay: 3000,
   },
   engineOptions: {
-    args: [
-      "--no-sandbox",
-      "--disable-setuid-sandbox",
-      "--disable-dev-shm-usage",
-      "--disable-gpu"
-    ],
-    executablePath: process.env.VERCEL
-      ? require("@sparticuz/chromium").executablePath
-      : undefined,
+    browser: require("./reports/engine_scripts/puppeteer/launchBrowser"),
   },
   fileNameTemplate: "{scenarioLabel}__{viewportLabel}",
   asyncCaptureLimit: 1,
