@@ -1,41 +1,20 @@
-name: Run Tests
+name: Trigger Railway Tests
 
 on:
-  push:
   schedule:
-    - cron: "0 1 * * *"
+    - cron: "0 1 * * *"  # Daily at 1 AM UTC
+  workflow_dispatch:  # Allow manual triggering
 
 jobs:
-  run-tests:
+  trigger-railway:
     runs-on: ubuntu-latest
 
-    container:
-      image: backstopjs/backstopjs:6.3.25 # match the package.json
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: "20" # Replace with your desired Node.js version
-
-      - name: Install dependencies
-        run: yarn install && yarn playwright install
-
-      - name: Run CI tests
-        run: yarn ci-test
-
-      - name: Netlify Deploy
-        env:
-          NETLIFY_SITE: ${{env.NETLIFY_SITE}}
-          NETLIFY_AUTH_TOKEN: ${{secrets.NETLIFY_AUTH_TOKEN}}
+      - name: Trigger Railway Deployment
         run: |
-          yarn netlify deploy --prod -s wemove-frontend-tests -d actionkit/reports
+          curl -X POST ${{ secrets.RAILWAY_WEBHOOK_URL }} \
+            -H "Content-Type: application/json" \
+            -d '{}'
 
-      - name: Send Slack report
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }} # Make sure to set this secret in your GitHub repository
-        run: |
-          node slack-report.mjs actionkit/reports/json_report/jsonReport.json
+      - name: Notify trigger
+        run: echo "Railway deployment triggered successfully at $(date)"
