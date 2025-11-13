@@ -1,0 +1,12 @@
+run_tests:
+  image:
+    name: backstopjs/backstopjs:6.3.23
+    entrypoint: [""]
+  stage: test
+  allow_failure: true
+  script:
+    - yarn install
+    - yarn playwright install
+    - yarn ci-test
+    - yarn netlify deploy --prod -s wemove-frontend-tests -d actionkit/reports
+    - node slack-report.mjs actionkit/reports/json_report/jsonReport.json
