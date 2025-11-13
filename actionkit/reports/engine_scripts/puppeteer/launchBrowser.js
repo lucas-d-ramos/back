@@ -1,21 +1,17 @@
-const puppeteer = require('puppeteer-core');
-
 module.exports = async () => {
-  let executablePath;
-
   if (process.env.VERCEL) {
+    // On Vercel, use puppeteer-core with @sparticuz/chromium
+    const puppeteer = require('puppeteer-core');
     const chromium = require('@sparticuz/chromium');
-    executablePath = await chromium.executablePath();
-  }
 
-  return puppeteer.launch({
-    executablePath,
-    args: [
-      '--no-sandbox',
-      '--disable-setuid-sandbox',
-      '--disable-dev-shm-usage',
-      '--disable-gpu',
-    ],
-    headless: true,
-  });
+    return puppeteer.launch({
+      executablePath: await chromium.executablePath(),
+      args: chromium.args,
+      headless: chromium.headless,
+    });
+  } else {
+    // Locally, let BackstopJS handle browser launching with default puppeteer
+    // Return null to let BackstopJS use its default launcher
+    return null;
+  }
 };
