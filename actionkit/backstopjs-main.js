@@ -20,7 +20,10 @@ module.exports = {
     delay: 3000,
   },
   engineOptions: {
-    browser: require("./reports/engine_scripts/puppeteer/launchBrowser"),
+    args: [
+      '--no-sandbox',
+      '--disable-setuid-sandbox',
+    ],
   },
   fileNameTemplate: "{scenarioLabel}__{viewportLabel}",
   asyncCaptureLimit: 1,
