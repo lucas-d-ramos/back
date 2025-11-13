@@ -10,9 +10,27 @@ puppeteerCore.launch = async function(options = {}) {
     console.log('[Puppeteer Wrapper] Detected Vercel environment');
     const chromium = require('@sparticuz/chromium');
 
-    // Get executable path - this extracts the Chromium binary
+    // Get executable path - this extracts the Chromium binary and libraries
     const executablePath = await chromium.executablePath();
     console.log('[Puppeteer Wrapper] Chromium binary at:', executablePath);
+
+    // Check where libraries were extracted
+    const fs = require('fs');
+    const path = require('path');
+    const tmpDirs = ['/tmp', '/tmp/al2', '/tmp/lib', '/tmp/al2/lib'];
+    for (const dir of tmpDirs) {
+      try {
+        if (fs.existsSync(dir)) {
+          const files = fs.readdirSync(dir);
+          const libs = files.filter(f => f.endsWith('.so') || f.includes('libnss'));
+          if (libs.length > 0) {
+            console.log(`[Puppeteer Wrapper] Found ${libs.length} .so files in ${dir}:`, libs.slice(0, 5).join(', '));
+          }
+        }
+      } catch (e) {
+        // Ignore errors
+      }
+    }
 
     // Check if binary exists and test it
     try {
@@ -45,35 +63,17 @@ puppeteerCore.launch = async function(options = {}) {
     }
 
     // Set LD_LIBRARY_PATH to help find shared libraries
-    // @sparticuz/chromium stores libraries in node_modules
-    const path = require('path');
-    const chromiumLibPath = path.join(
-      require.resolve('@sparticuz/chromium'),
-      '../..',
-      'lib'
-    );
-
+    // @sparticuz/chromium extracts libraries to /tmp paths
     const libPaths = [
-      chromiumLibPath,
+      '/tmp/al2/lib',  // AL2 runtime
+      '/tmp/lib',      // Alternative path
       '/tmp',
       '/tmp/swiftshader',
       process.env.LD_LIBRARY_PATH || ''
     ].filter(Boolean).join(':');
 
     process.env.LD_LIBRARY_PATH = libPaths;
-    console.log('[Puppeteer Wrapper] Chromium lib path:', chromiumLibPath);
     console.log('[Puppeteer Wrapper] Set LD_LIBRARY_PATH to:', libPaths);
-
-    // Check if NSS libraries exist
-    const fs = require('fs');
-    try {
-      const libFiles = fs.readdirSync(chromiumLibPath);
-      console.log('[Puppeteer Wrapper] Files in lib directory:', libFiles.join(', '));
-      const hasNss = libFiles.some(f => f.includes('libnss'));
-      console.log('[Puppeteer Wrapper] NSS libraries found:', hasNss);
-    } catch (fsError) {
-      console.log('[Puppeteer Wrapper] Could not read lib directory:', fsError.message);
-    }
 
     // Merge options with Vercel-specific configuration
     const vercelOptions = {
