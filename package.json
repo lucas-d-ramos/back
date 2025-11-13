@@ -2,6 +2,7 @@
   "name": "frontend-tests",
   "version": "1.1.1",
   "scripts": {
+    "postinstall": "node patch-backstop.mjs",
     "reference": "backstop reference --config=\"actionkit/backstopjs-main.js\"",
     "test": "backstop test --config=\"actionkit/backstopjs-main.js\"",
     "ak-tests": "backstop test --akTest --config=\"actionkit/backstopjs-main.js\"",
