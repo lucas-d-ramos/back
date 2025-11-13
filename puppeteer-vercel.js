@@ -13,8 +13,14 @@ puppeteerCore.launch = async function(options = {}) {
       const chromeLambda = require('chrome-aws-lambda');
       console.log('[Puppeteer Wrapper] Using chrome-aws-lambda');
 
+      // chrome-aws-lambda uses a different API - executablePath is awaited directly
       const executablePath = await chromeLambda.executablePath;
       console.log('[Puppeteer Wrapper] Chrome path:', executablePath);
+
+      // Validate we got a real path
+      if (!executablePath) {
+        throw new Error('chrome-aws-lambda returned null executablePath');
+      }
 
       const vercelOptions = {
         ...options,
