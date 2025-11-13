@@ -11,30 +11,26 @@ try {
   let content = readFileSync(backstopPuppetPath, 'utf8');
   const normalizedPath = puppeteerWrapperPath.replace(/\\/g, '/');
 
-  // First, restore original if already patched (to handle path changes)
-  content = content.replace(
-    /const puppeteer = require\('.*puppeteer-vercel\.js'\);/g,
-    "const puppeteer = require('puppeteer');"
-  );
-  content = content.replace(
-    /const puppeteer = require\(".*puppeteer-vercel\.js"\);/g,
-    "const puppeteer = require('puppeteer');"
-  );
+  console.log('📝 Patching BackstopJS...');
+  console.log(`   Wrapper path: ${normalizedPath}`);
 
-  // Now apply the patch with the correct absolute path
+  // Aggressively replace ANY require statement containing puppeteer
+  // This handles both original and any previously patched versions
   content = content.replace(
-    "const puppeteer = require('puppeteer');",
-    `const puppeteer = require('${normalizedPath}');`
-  );
-
-  content = content.replace(
-    'const puppeteer = require("puppeteer");',
+    /const puppeteer = require\(['"](.*?puppeteer.*?)['"]\ ?\);?/g,
     `const puppeteer = require('${normalizedPath}');`
   );
 
   writeFileSync(backstopPuppetPath, content);
   console.log('✅ BackstopJS patched successfully for Vercel!');
-  console.log(`   Using wrapper at: ${normalizedPath}`);
+
+  // Verify the patch
+  const verifyContent = readFileSync(backstopPuppetPath, 'utf8');
+  if (verifyContent.includes(normalizedPath)) {
+    console.log('✅ Patch verified - correct path is in file');
+  } else {
+    console.log('⚠️  Warning: Could not verify patch');
+  }
 } catch (error) {
   console.log('⚠️  Could not patch BackstopJS:', error.message);
   console.log('   This is OK if running locally');
