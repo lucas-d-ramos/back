@@ -1,0 +1,7 @@
+{
+  "buildCommand": "yarn install && yarn playwright install && yarn ci-test",
+  "outputDirectory": "actionkit/reports",
+  "installCommand": "yarn install",
+  "framework": null,
+  "public": true
+}
