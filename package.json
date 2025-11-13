@@ -1,0 +1,23 @@
+{
+  "name": "frontend-tests",
+  "version": "1.1.1",
+  "scripts": {
+    "reference": "backstop reference --config=\"actionkit/backstopjs-main.js\" --docker",
+    "test": "backstop test --config=\"actionkit/backstopjs-main.js\" --docker",
+    "ak-tests": "backstop test --akTest --config=\"actionkit/backstopjs-main.js\" --docker",
+    "approve": "backstop approve --config=\"actionkit/backstopjs-main.js\" --docker",
+    "open-report": "backstop openReport --config=\"actionkit/backstopjs-main.js\" --docker",
+    "approve-report": "node approve-report.mjs",
+    "serve": "BACKSTOP_REMOTE_HTTP_PORT=3000 backstop remote --config=\"actionkit/backstopjs-main.js\"",
+    "ci-test": "backstop test --config=\"actionkit/backstopjs-main.js\" || true",
+    "netlify-reports": "netlify link wemove-frontend-tests1 && netlify deploy --prod -d actionkit/reports"
+  },
+  "dependencies": {
+    "axios": "^1.11.0",
+    "backstopjs": "^6.3.25",
+    "decimal.js": "^10.6.0",
+    "netlify-cli": "^17.22.0",
+    "playwright": "^1.54.1"
+  },
+  "packageManager": "yarn@1.22.19+sha1.4ba7fc5c6e704fce2066ecbfb0b0d8976fe62447"
+}
