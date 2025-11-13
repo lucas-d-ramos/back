@@ -1,19 +1,18 @@
 #!/bin/bash
-set -e
 
 echo "============================================"
 echo "Starting BackstopJS Test Suite"
 echo "============================================"
 
-# Run BackstopJS tests (allow to continue even if tests fail)
+# Run BackstopJS tests (without --docker flag since we're already in Docker)
 echo "Running BackstopJS tests..."
-yarn ci-test || echo "Tests completed with failures"
+backstop test --config="actionkit/backstopjs-main.js" || echo "Tests completed with failures"
 
 echo ""
 echo "============================================"
 echo "Deploying reports to Netlify"
 echo "============================================"
-yarn netlify deploy --prod -s wemove-frontend-tests -d actionkit/reports
+netlify deploy --prod -s wemove-frontend-tests -d actionkit/reports
 
 echo ""
 echo "============================================"
