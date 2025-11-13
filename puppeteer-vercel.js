@@ -1,72 +1,69 @@
 // Wrapper around puppeteer-core that configures it for Vercel
 const puppeteerCore = require('puppeteer-core');
+const { spawn } = require('child_process');
 
-// Override the launch method to use chrome-aws-lambda when on Vercel
+// Override the launch method to use @sparticuz/chromium when on Vercel
 const originalLaunch = puppeteerCore.launch;
 
 puppeteerCore.launch = async function(options = {}) {
   if (process.env.VERCEL) {
     console.log('[Puppeteer Wrapper] Detected Vercel environment');
+    const chromium = require('@sparticuz/chromium');
 
-    // Try chrome-aws-lambda first - it's better supported on Vercel
+    // Get executable path - this extracts the Chromium binary
+    const executablePath = await chromium.executablePath();
+    console.log('[Puppeteer Wrapper] Chromium binary at:', executablePath);
+
+    // Check if binary exists and test it
     try {
-      const chromeLambda = require('chrome-aws-lambda');
-      console.log('[Puppeteer Wrapper] Using chrome-aws-lambda');
+      const { promisify } = require('util');
+      const execFile = promisify(require('child_process').execFile);
 
-      // chrome-aws-lambda uses a different API - executablePath is awaited directly
-      const executablePath = await chromeLambda.executablePath;
-      console.log('[Puppeteer Wrapper] Chrome path:', executablePath);
+      // Try to get version to verify libraries are accessible
+      console.log('[Puppeteer Wrapper] Testing Chromium binary...');
+      const { stdout, stderr } = await execFile(executablePath, ['--version'], {
+        timeout: 5000
+      });
+      console.log('[Puppeteer Wrapper] Chromium version:', stdout.trim());
+    } catch (testError) {
+      console.log('[Puppeteer Wrapper] Binary test failed:', testError.message);
 
-      // Validate we got a real path
-      if (!executablePath) {
-        throw new Error('chrome-aws-lambda returned null executablePath');
+      // Check what libraries are missing
+      try {
+        const lddResult = await new Promise((resolve) => {
+          const proc = spawn('ldd', [executablePath]);
+          let output = '';
+          proc.stdout.on('data', (data) => output += data);
+          proc.stderr.on('data', (data) => output += data);
+          proc.on('close', () => resolve(output));
+        });
+        console.log('[Puppeteer Wrapper] Missing libraries (ldd check):',
+          lddResult.split('\n').filter(line => line.includes('not found')).join(', '));
+      } catch (lddError) {
+        console.log('[Puppeteer Wrapper] Could not run ldd check');
       }
-
-      const vercelOptions = {
-        ...options,
-        executablePath,
-        args: [...chromeLambda.args, ...(options.args || [])],
-        headless: chromeLambda.headless,
-      };
-
-      console.log('[Puppeteer Wrapper] Launching browser with chrome-aws-lambda...');
-      return originalLaunch.call(this, vercelOptions);
-
-    } catch (chromeLambdaError) {
-      console.log('[Puppeteer Wrapper] chrome-aws-lambda failed, trying @sparticuz/chromium:', chromeLambdaError.message);
-
-      // Fallback to @sparticuz/chromium
-      const chromium = require('@sparticuz/chromium');
-
-      // Set font config before extracting
-      if (chromium.font) {
-        await chromium.font('/tmp/fonts/NotoColorEmoji.ttf');
-        console.log('[Puppeteer Wrapper] Font configured');
-      }
-
-      const executablePath = await chromium.executablePath();
-      console.log('[Puppeteer Wrapper] Using Chromium at:', executablePath);
-
-      // Set LD_LIBRARY_PATH
-      const libPaths = [
-        '/tmp',
-        '/tmp/swiftshader',
-        process.env.LD_LIBRARY_PATH || ''
-      ].filter(Boolean).join(':');
-
-      process.env.LD_LIBRARY_PATH = libPaths;
-      console.log('[Puppeteer Wrapper] Set LD_LIBRARY_PATH to:', libPaths);
-
-      const vercelOptions = {
-        ...options,
-        executablePath,
-        args: [...(chromium.args || []), ...(options.args || [])],
-        headless: chromium.headless ?? options.headless ?? true,
-      };
-
-      console.log('[Puppeteer Wrapper] Launching browser with @sparticuz/chromium...');
-      return originalLaunch.call(this, vercelOptions);
     }
+
+    // Set LD_LIBRARY_PATH to help find shared libraries
+    const libPaths = [
+      '/tmp',
+      '/tmp/swiftshader',
+      process.env.LD_LIBRARY_PATH || ''
+    ].filter(Boolean).join(':');
+
+    process.env.LD_LIBRARY_PATH = libPaths;
+    console.log('[Puppeteer Wrapper] Set LD_LIBRARY_PATH to:', libPaths);
+
+    // Merge options with Vercel-specific configuration
+    const vercelOptions = {
+      ...options,
+      executablePath,
+      args: [...(chromium.args || []), ...(options.args || [])],
+      headless: chromium.headless ?? options.headless ?? true,
+    };
+
+    console.log('[Puppeteer Wrapper] Launching browser...');
+    return originalLaunch.call(this, vercelOptions);
   }
 
   // Not on Vercel, use default behavior

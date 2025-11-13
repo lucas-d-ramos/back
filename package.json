@@ -17,7 +17,6 @@
     "backstopjs": "^6.3.25",
     "decimal.js": "^10.6.0",
     "@sparticuz/chromium": "^131.0.0",
-    "chrome-aws-lambda": "^10.1.0",
     "puppeteer-core": "^23.11.1"
   },
   "packageManager": "yarn@1.22.19+sha1.4ba7fc5c6e704fce2066ecbfb0b0d8976fe62447"
