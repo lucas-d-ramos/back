@@ -17,12 +17,12 @@ module.exports = {
   report: ["browser", "json"],
   engine: "playwright",
   scenarioDefaults: {
-    delay: 10000,
+    delay: 3000,
   },
   engineOptions: {
     browser: "chromium",
   },
   fileNameTemplate: "{scenarioLabel}__{viewportLabel}",
-  asyncCaptureLimit: 1,
-  asyncCompareLimit: 1,
+  asyncCaptureLimit: 10,
+  asyncCompareLimit: 50,
 };
