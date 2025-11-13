@@ -4,6 +4,14 @@
 set +e
 
 echo "Running BackstopJS tests with Puppeteer..."
+
+# On Vercel, set Puppeteer to use @sparticuz/chromium
+if [ -n "$VERCEL" ]; then
+  export PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+  export PUPPETEER_EXECUTABLE_PATH=$(node setup-chromium.mjs)
+  echo "Using Chromium at: $PUPPETEER_EXECUTABLE_PATH"
+fi
+
 yarn ci-test
 
 # Ensure output directory exists (create placeholder if tests failed)
