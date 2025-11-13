@@ -17,13 +17,16 @@ const getMessage = (reportFile) => {
 
   const emoji = errorsCount > 0 ? ":poop:" : ":white_check_mark:";
   const failedTests = getFailedTests(results.errors);
+  const reportUrl = process.env.VERCEL_URL
+    ? `https://${process.env.VERCEL_URL}`
+    : process.env.REPORT_URL || "https://your-project.vercel.app";
 
   return JSON.stringify({
     text: ` -----------------------------------
   ${emoji} *Frontend tests results* ${emoji}
   -----------------------------------
   ${msgStat}
-  [Full report](https://wemove-frontend-tests.netlify.app)
+  [Full report](${reportUrl})
   ${failedTests}`,
   });
 };
@@ -80,10 +83,9 @@ const sendMessage = async (reportFile) => {
 
   console.log(messageJSON);
 
-  await axios.post(
-    "https://hooks.slack.com/services/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",
-    messageJSON
-  );
+  const webhookUrl = process.env.SLACK_WEBHOOK_URL || "https://hooks.slack.com/services/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";
+
+  await axios.post(webhookUrl, messageJSON);
 };
 
 if (process.argv.length < 3) {

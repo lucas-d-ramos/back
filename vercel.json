@@ -1,5 +1,5 @@
 {
-  "buildCommand": "yarn playwright install && yarn ci-test",
+  "buildCommand": "bash build-and-report.sh",
   "outputDirectory": "actionkit/reports/html_report",
   "installCommand": "yarn install",
   "framework": null,
