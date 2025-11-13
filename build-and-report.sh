@@ -3,10 +3,7 @@
 # Don't exit on error - we want to continue even if tests fail
 set +e
 
-echo "Installing Playwright browsers..."
-yarn playwright install --with-deps
-
-echo "Running BackstopJS tests..."
+echo "Running BackstopJS tests with Puppeteer..."
 yarn ci-test
 
 # Ensure output directory exists (create placeholder if tests failed)

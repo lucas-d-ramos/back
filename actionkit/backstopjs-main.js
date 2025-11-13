@@ -3,8 +3,8 @@ const utilities = require("./utilities/utilities");
 module.exports = {
   id: "actionkit",
   viewports: utilities.getViewPorts(),
-  onBeforeScript: "playwright/onBefore.js",
-  onReadyScript: "playwright/onReady.js",
+  onBeforeScript: "puppeteer/onBefore.js",
+  onReadyScript: "puppeteer/onReady.js",
   scenarios: utilities.getScenarios(),
   paths: {
     bitmaps_reference: "actionkit/reports/bitmaps_reference",
@@ -15,12 +15,20 @@ module.exports = {
     json_report: "actionkit/reports/json_report",
   },
   report: ["browser", "json"],
-  engine: "playwright",
+  engine: "puppeteer",
   scenarioDefaults: {
     delay: 3000,
   },
   engineOptions: {
-    browser: "chromium",
+    args: [
+      "--no-sandbox",
+      "--disable-setuid-sandbox",
+      "--disable-dev-shm-usage",
+      "--disable-gpu"
+    ],
+    executablePath: process.env.VERCEL
+      ? require("@sparticuz/chromium").executablePath
+      : undefined,
   },
   fileNameTemplate: "{scenarioLabel}__{viewportLabel}",
   asyncCaptureLimit: 1,

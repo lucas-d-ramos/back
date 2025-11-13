@@ -3,10 +3,7 @@
   "outputDirectory": "actionkit/reports/html_report",
   "installCommand": "yarn install",
   "framework": null,
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "/$1"
-    }
-  ]
+  "github": {
+    "enabled": false
+  }
 }
