@@ -7,11 +7,16 @@ WORKDIR /app
 # Copy package files
 COPY ["package*.json", "yarn.lock", "./"]
 
-# Install dependencies including Playwright browsers
-RUN yarn install && yarn playwright install --with-deps
+# Install dependencies only (Playwright browsers already in base image)
+RUN yarn install --production --frozen-lockfile && \
+    yarn cache clean && \
+    rm -rf /tmp/* /root/.cache
 
-# Copy all application files
-COPY . .
+# Copy only necessary application files
+COPY actionkit ./actionkit
+COPY slack-report.mjs ./
+COPY approve-report.mjs ./
+COPY run-tests.sh ./
 
 # Make entrypoint script executable
 RUN chmod +x /app/run-tests.sh

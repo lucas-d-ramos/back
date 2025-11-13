@@ -8,6 +8,23 @@ node_modules
 .gitignore
 yarn-error.log
 npm-debug.log
+
+# Exclude generated reports - they're created during runtime
 actionkit/reports/bitmaps_test
 actionkit/reports/html_report
 actionkit/reports/ci_report
+actionkit/reports/json_report
+
+# Exclude large yarn files
+.yarn
+.yarnrc.yml
+
+# Exclude logs
+*.log
+
+# Exclude GitLab CI (if exists)
+.gitlab-ci.yml
+
+# Exclude Dockerfile itself
+Dockerfile
+.dockerignore
