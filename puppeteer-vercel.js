@@ -45,14 +45,35 @@ puppeteerCore.launch = async function(options = {}) {
     }
 
     // Set LD_LIBRARY_PATH to help find shared libraries
+    // @sparticuz/chromium stores libraries in node_modules
+    const path = require('path');
+    const chromiumLibPath = path.join(
+      require.resolve('@sparticuz/chromium'),
+      '../..',
+      'lib'
+    );
+
     const libPaths = [
+      chromiumLibPath,
       '/tmp',
       '/tmp/swiftshader',
       process.env.LD_LIBRARY_PATH || ''
     ].filter(Boolean).join(':');
 
     process.env.LD_LIBRARY_PATH = libPaths;
+    console.log('[Puppeteer Wrapper] Chromium lib path:', chromiumLibPath);
     console.log('[Puppeteer Wrapper] Set LD_LIBRARY_PATH to:', libPaths);
+
+    // Check if NSS libraries exist
+    const fs = require('fs');
+    try {
+      const libFiles = fs.readdirSync(chromiumLibPath);
+      console.log('[Puppeteer Wrapper] Files in lib directory:', libFiles.join(', '));
+      const hasNss = libFiles.some(f => f.includes('libnss'));
+      console.log('[Puppeteer Wrapper] NSS libraries found:', hasNss);
+    } catch (fsError) {
+      console.log('[Puppeteer Wrapper] Could not read lib directory:', fsError.message);
+    }
 
     // Merge options with Vercel-specific configuration
     const vercelOptions = {
