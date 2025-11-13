@@ -12,6 +12,11 @@ puppeteerCore.launch = async function(options = {}) {
     const executablePath = await chromium.executablePath();
     console.log('[Puppeteer Wrapper] Using Chromium at:', executablePath);
 
+    // Set library path for shared libraries
+    const libPath = '/tmp';
+    process.env.LD_LIBRARY_PATH = `${libPath}:${process.env.LD_LIBRARY_PATH || ''}`;
+    console.log('[Puppeteer Wrapper] Set LD_LIBRARY_PATH to:', process.env.LD_LIBRARY_PATH);
+
     // Merge options with Vercel-specific configuration
     const vercelOptions = {
       ...options,
