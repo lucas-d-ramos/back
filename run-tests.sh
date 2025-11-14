@@ -5,9 +5,9 @@ echo "============================================"
 echo "Starting BackstopJS Test Suite"
 echo "============================================"
 
-# Run BackstopJS tests (allow to continue even if tests fail)
+# Run BackstopJS tests (without --docker since we're inside container)
 echo "Running BackstopJS tests..."
-yarn ci-test || echo "Tests completed with failures"
+yarn ci-test-container || echo "Tests completed with failures"
 
 echo ""
 echo "============================================"
