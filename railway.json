@@ -8,5 +8,6 @@
     "startCommand": "/app/run-tests.sh",
     "restartPolicyType": "ON_FAILURE",
     "restartPolicyMaxRetries": 1
+    // "cronSchedule": "0 1 * * *"
   }
 }
