@@ -4,7 +4,7 @@ set -e
 cd /app
 
 # Run BackstopJS tests (continue even if tests fail)
-backstop test --config=actionkit/backstopjs-main.js || true
+backstop test --config="actionkit/backstopjs-main.js" || true
 
 # Deploy to Netlify
 netlify deploy --prod -s wemove-frontend-tests -d actionkit/reports
