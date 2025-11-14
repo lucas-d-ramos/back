@@ -10,5 +10,8 @@ RUN yarn install && yarn playwright install
 
 COPY . .
 
-# Railway will use the start command from package.json
-CMD ["yarn", "start"]
+# Make run script executable
+RUN chmod +x run.sh
+
+# Railway will execute the run script
+CMD ["sh", "./run.sh"]
