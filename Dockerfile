@@ -6,6 +6,9 @@ WORKDIR /app
 
 COPY ["package*.json", "yarn.lock", "./"]
 
-RUN yarn install
+RUN yarn install && yarn playwright install
 
-COPY actionkit ./
+COPY . .
+
+# Railway will use the start command from package.json
+CMD ["yarn", "start"]

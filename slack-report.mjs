@@ -80,10 +80,13 @@ const sendMessage = async (reportFile) => {
 
   console.log(messageJSON);
 
-  await axios.post(
-    "https://hooks.slack.com/services/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",
-    messageJSON
-  );
+  const webhookUrl = process.env.SLACK_WEBHOOK_URL;
+  if (!webhookUrl) {
+    console.error("Error: SLACK_WEBHOOK_URL environment variable is not set");
+    process.exit(1);
+  }
+
+  await axios.post(webhookUrl, messageJSON);
 };
 
 if (process.argv.length < 3) {
