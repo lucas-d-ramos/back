@@ -11,7 +11,7 @@
     "serve": "BACKSTOP_REMOTE_HTTP_PORT=3000 backstop remote --config=\"actionkit/backstopjs-main.js\"",
     "ci-test": "backstop test --config=\"actionkit/backstopjs-main.js\" || true",
     "netlify-reports": "netlify link wemove-frontend-tests1 && netlify deploy --prod -d actionkit/reports",
-    "start": "backstop test --config=/app/actionkit/backstopjs-main.js || true && netlify deploy --prod -s wemove-frontend-tests -d /app/actionkit/reports && node /app/slack-report.mjs /app/actionkit/reports/json_report/jsonReport.json"
+    "start": "cd /app && backstop test --config=actionkit/backstopjs-main.js || true && netlify deploy --prod -s wemove-frontend-tests -d actionkit/reports && node slack-report.mjs actionkit/reports/json_report/jsonReport.json"
   },
   "dependencies": {
     "axios": "^1.11.0",
